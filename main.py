@@ -18,6 +18,7 @@ with app.app_context():
     db.create_all()
 
 
+# Это добавление поста
 @app.route('/posts', methods=['POST'])
 def create_post():
     data = request.get_json()
@@ -37,6 +38,7 @@ def create_post():
                     'content': new_post.content}), 201
 
 
+# Тут можно вывести все посты, которые только есть
 @app.route('/posts', methods=['GET'])
 def get_posts():
     posts = Post.query.all()
@@ -46,10 +48,38 @@ def get_posts():
                    'likes': post.likes} for post in posts]
 
     return app.response_class(
-        response=json.dumps(posts_list, ensure_ascii=False), # ensure_ascii нужна для того, чтобы кириллица работала.
+        response=json.dumps(posts_list, ensure_ascii=False),  # ensure_ascii нужна для того, чтобы кириллица работала.
         status=200,
         mimetype='application/json'
     )
+
+
+# Получение подробной информации о посте (после posts пишешь id его, типа: posts/3)
+@app.route('/posts/<int:post_id>', methods=['GET'])
+def get_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return jsonify({'id': post.id,
+                    'title': post.title,
+                    'content': post.content,
+                    'likes': post.likes})
+
+
+# Для обновлении значений в посте (то есть в Postman в Body указываешь "title": "TEST TEST",
+# а ещё "content": "TEST TEST TEST", только не забудь метод PUT выбрать)
+@app.route('/posts/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    data = request.get_json()
+
+    if 'title' in data:
+        post.title = data['title']
+    if 'content' in data:
+        post.content = data['content']
+
+    db.session.commit()
+    return jsonify({'id': post.id,
+                    'title': post.title,
+                    'content': post.content})
 
 
 if __name__ == "__main__":
