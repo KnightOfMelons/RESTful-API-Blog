@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 import json
+import os
 
 app = Flask(__name__)
 # тут прописываете путь к свой БД на PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456789qwe123!@localhost:5432/bd_for_junior_blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://postgres:123456789qwe123!@localhost:5432/bd_for_junior_blog')
 db = SQLAlchemy(app)
 
 
@@ -126,4 +127,4 @@ def unlike_post(post_id):
 
 # Если вам надобно, то можете выключить debug мод, мне так удобнее всегда.
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, host='127.0.0.1')
+    app.run(debug=True, port=5000, host='0.0.0.0')
