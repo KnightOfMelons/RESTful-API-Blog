@@ -4,8 +4,10 @@ import json
 import os
 
 app = Flask(__name__)
-# тут прописываете путь к свой БД на PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://postgres:123456789qwe123!@localhost:5432/bd_for_junior_blog')
+# тут прописываете путь к свой БД на PostgresSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI',
+                                                  'postgresql://postgres:123456789qwe123!@localhost:5432'
+                                                  '/bd_for_junior_blog')
 db = SQLAlchemy(app)
 
 
